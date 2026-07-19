@@ -38,6 +38,33 @@
       "lat": 13.7563,
       "lng": 100.5018,
       "note": "Replace url with your own .glb model"
+    },
+    {
+      "id": "chiangmai-portal",
+      "name": "Doi Suthep portal",
+      "type": "portal",
+      "lat": 18.8048,
+      "lng": 98.9217,
+      "color": "#e8b44a",
+      "note": "Golden gateway on the mountain, Chiang Mai"
+    },
+    {
+      "id": "ayutthaya-crystal",
+      "name": "Ancient city crystal",
+      "type": "crystal",
+      "lat": 14.3567,
+      "lng": 100.5678,
+      "color": "#3ec6a8",
+      "note": "Among the ruins of Wat Mahathat, Ayutthaya"
+    },
+    {
+      "id": "phuket-beacon",
+      "name": "Big Buddha beacon",
+      "type": "beacon",
+      "lat": 7.8276,
+      "lng": 98.3129,
+      "color": "#7f77dd",
+      "note": "Light column over Phuket"
     }
   ]
 }

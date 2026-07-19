@@ -2,7 +2,7 @@
 // Strategy: network-first for world.json (fresh data when online, cached
 // world when roaming without signal), cache-first for everything else.
 
-const CACHE = "mirage-v1";
+const CACHE = "mirage-v2";
 const SHELL = [
   "./",
   "./index.html",

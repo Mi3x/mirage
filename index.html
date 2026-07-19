@@ -67,7 +67,22 @@
   #toast { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
     background: rgba(11,14,26,.85); border-radius: 12px; padding: 14px 20px;
     font-size: 14px; display: none; z-index: 20; text-align: center; max-width: 82vw; }
+
+  /* ---- World map overlay ---- */
+  #map-overlay { position: absolute; inset: 0; z-index: 30; display: none;
+    flex-direction: column; background: var(--ink); }
+  #map-topbar { display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; padding-top: max(14px, env(safe-area-inset-top)); }
+  #map-topbar .wordmark { margin-bottom: 0; }
+  #btn-map-close { background: rgba(242,239,230,.1); color: var(--mist);
+    border: 0; border-radius: 999px; width: 36px; height: 36px; font-size: 16px;
+    cursor: pointer; }
+  #map { flex: 1; }
+  .leaflet-popup-content { font-family: inherit; }
+  .anchor-pop b { display: block; font-size: 14px; }
+  .anchor-pop small { color: #666; }
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 </head>
 <body>
   <video id="camera-feed" autoplay muted playsinline></video>
@@ -79,7 +94,16 @@
     <p>Point your device at the world around you and discover living 3D artifacts anchored to real places.</p>
     <button class="btn btn-primary" id="btn-phone">Enter with phone camera</button>
     <button class="btn btn-ghost" id="btn-xr" disabled>Enter with glasses / headset</button>
+    <button class="btn btn-ghost" id="btn-map">View world map</button>
     <div id="xr-note">Checking for WebXR device…</div>
+  </div>
+
+  <div id="map-overlay">
+    <div id="map-topbar">
+      <div class="wordmark">Mirage · world map</div>
+      <button id="btn-map-close" aria-label="Close map">✕</button>
+    </div>
+    <div id="map"></div>
   </div>
 
   <div id="hud">
@@ -101,7 +125,54 @@
   }
   </script>
   <script type="module" src="main.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script>
+    // ---- World map ----
+    let worldMap = null;
+    const overlay = document.getElementById("map-overlay");
+
+    document.getElementById("btn-map").addEventListener("click", async () => {
+      overlay.style.display = "flex";
+      if (worldMap) return;
+
+      worldMap = L.map("map").setView([13.75, 100.5], 6);
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "© OpenStreetMap contributors",
+      }).addTo(worldMap);
+
+      try {
+        const res = await fetch("world.json", { cache: "no-cache" });
+        const data = await res.json();
+        const pts = [];
+        for (const a of data.anchors ?? []) {
+          const color = a.color || "#3ec6a8";
+          L.circleMarker([a.lat, a.lng], {
+            radius: 9, color, weight: 3, fillColor: color, fillOpacity: 0.35,
+          })
+            .addTo(worldMap)
+            .bindPopup(
+              `<div class="anchor-pop"><b>${a.name}</b>` +
+              `<small>${a.type}${a.note ? " · " + a.note : ""}</small></div>`
+            );
+          pts.push([a.lat, a.lng]);
+        }
+        if (pts.length) worldMap.fitBounds(pts, { padding: [40, 40] });
+      } catch (e) { console.error(e); }
+
+      // Show the visitor's own position as a white dot, if they allow it
+      navigator.geolocation?.getCurrentPosition((pos) => {
+        L.circleMarker([pos.coords.latitude, pos.coords.longitude], {
+          radius: 7, color: "#f2efe6", weight: 3, fillColor: "#f2efe6", fillOpacity: 0.9,
+        }).addTo(worldMap).bindPopup("<b>You are here</b>");
+      });
+
+      setTimeout(() => worldMap.invalidateSize(), 100);
+    });
+
+    document.getElementById("btn-map-close").addEventListener("click", () => {
+      overlay.style.display = "none";
+    });
+
     if ("serviceWorker" in navigator) {
       addEventListener("load", () => navigator.serviceWorker.register("sw.js"));
     }
