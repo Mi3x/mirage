@@ -1,0 +1,43 @@
+{
+  "_readme": "This is your world database. Each anchor is a 3D animation pinned to a real place. Types: portal, crystal, beacon, or model (with url to a .glb file). Edit coordinates to places near you for testing — get lat/lng by long-pressing any point in Google Maps.",
+  "anchors": [
+    {
+      "id": "wat-arun-portal",
+      "name": "Temple of Dawn portal",
+      "type": "portal",
+      "lat": 13.7437,
+      "lng": 100.4889,
+      "color": "#e8b44a",
+      "note": "A golden gateway on the Chao Phraya riverside"
+    },
+    {
+      "id": "lumphini-crystal",
+      "name": "Lumphini crystal",
+      "type": "crystal",
+      "lat": 13.7314,
+      "lng": 100.5417,
+      "color": "#3ec6a8",
+      "note": "Hidden in the park near the lake"
+    },
+    {
+      "id": "victory-beacon",
+      "name": "Victory beacon",
+      "type": "beacon",
+      "lat": 13.7649,
+      "lng": 100.5383,
+      "color": "#7f77dd",
+      "note": "A light column above the monument"
+    },
+    {
+      "id": "sample-model",
+      "name": "Flying helmet (glTF demo)",
+      "type": "model",
+      "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/DamagedHelmet/glTF-Binary/DamagedHelmet.glb",
+      "scale": 0.8,
+      "spin": 0.6,
+      "lat": 13.7563,
+      "lng": 100.5018,
+      "note": "Replace url with your own .glb model"
+    }
+  ]
+}

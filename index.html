@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0b0e1a">
+<title>Mirage — the world's digital layer</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+  :root {
+    --ink: #0b0e1a;          /* deep night indigo */
+    --mist: #f2efe6;         /* paper white */
+    --gold: #e8b44a;         /* temple-gold accent */
+    --teal: #3ec6a8;         /* digital layer green */
+    --dim: rgba(242,239,230,.55);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; background: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--mist); -webkit-user-select: none; user-select: none; }
+
+  #camera-feed { position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; display: none; }
+  #gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+  /* ---- Landing overlay ---- */
+  #landing { position: absolute; inset: 0; display: flex; flex-direction: column;
+    justify-content: flex-end; padding: 32px 28px 56px;
+    background: linear-gradient(180deg, rgba(11,14,26,.2) 0%, rgba(11,14,26,.92) 70%);
+    z-index: 10; }
+  .wordmark { font-size: 13px; letter-spacing: .42em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 10px; }
+  #landing h1 { font-size: clamp(34px, 9vw, 52px); line-height: 1.05;
+    font-weight: 650; letter-spacing: -0.01em; margin-bottom: 14px; }
+  #landing h1 em { font-style: normal; color: var(--teal); }
+  #landing p { font-size: 15px; line-height: 1.55; color: var(--dim);
+    max-width: 34ch; margin-bottom: 28px; }
+  .btn { display: block; width: 100%; padding: 17px; border: 0; border-radius: 14px;
+    font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 12px;
+    font-family: inherit; }
+  .btn-primary { background: var(--gold); color: var(--ink); }
+  .btn-ghost { background: transparent; color: var(--mist);
+    border: 1px solid rgba(242,239,230,.28); }
+  .btn:disabled { opacity: .4; }
+  #xr-note { font-size: 12px; color: var(--dim); text-align: center; }
+
+  /* ---- HUD ---- */
+  #hud { position: absolute; inset: 0; z-index: 5; pointer-events: none;
+    display: none; }
+  #status { position: absolute; top: max(14px, env(safe-area-inset-top));
+    left: 14px; right: 14px; display: flex; gap: 8px; align-items: center;
+    font-size: 12px; }
+  .pill { background: rgba(11,14,26,.66); backdrop-filter: blur(8px);
+    border-radius: 999px; padding: 7px 13px; }
+  .pill b { color: var(--teal); font-weight: 600; }
+  #nearby { position: absolute; bottom: max(20px, env(safe-area-inset-bottom));
+    left: 14px; right: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .anchor-card { background: rgba(11,14,26,.72); backdrop-filter: blur(8px);
+    border-left: 3px solid var(--gold); border-radius: 10px; padding: 10px 14px;
+    font-size: 13px; display: flex; justify-content: space-between; align-items: baseline; }
+  .anchor-card .dist { color: var(--teal); font-variant-numeric: tabular-nums;
+    font-size: 12px; white-space: nowrap; margin-left: 12px; }
+  .anchor-card small { display: block; color: var(--dim); font-size: 11px; margin-top: 2px; }
+
+  #toast { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    background: rgba(11,14,26,.85); border-radius: 12px; padding: 14px 20px;
+    font-size: 14px; display: none; z-index: 20; text-align: center; max-width: 82vw; }
+</style>
+</head>
+<body>
+  <video id="camera-feed" autoplay muted playsinline></video>
+  <canvas id="gl"></canvas>
+
+  <div id="landing">
+    <div class="wordmark">Mirage</div>
+    <h1>The world has a <em>second layer</em>.</h1>
+    <p>Point your device at the world around you and discover living 3D artifacts anchored to real places.</p>
+    <button class="btn btn-primary" id="btn-phone">Enter with phone camera</button>
+    <button class="btn btn-ghost" id="btn-xr" disabled>Enter with glasses / headset</button>
+    <div id="xr-note">Checking for WebXR device…</div>
+  </div>
+
+  <div id="hud">
+    <div id="status">
+      <div class="pill" id="gps-pill">GPS <b id="gps-acc">—</b></div>
+      <div class="pill" id="heading-pill">Heading <b id="heading">—</b></div>
+    </div>
+    <div id="nearby"></div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/"
+    }
+  }
+  </script>
+  <script type="module" src="main.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      addEventListener("load", () => navigator.serviceWorker.register("sw.js"));
+    }
+  </script>
+</body>
+</html>
