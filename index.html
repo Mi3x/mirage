@@ -30,6 +30,8 @@
     justify-content: flex-end; padding: 32px 28px 56px;
     background: linear-gradient(180deg, rgba(11,14,26,.2) 0%, rgba(11,14,26,.92) 70%);
     z-index: 10; }
+  #hero-dragon { flex: 1; min-height: 0; width: 100%; margin-bottom: 8px;
+    --poster-color: transparent; background: transparent; }
   .wordmark { font-size: 13px; letter-spacing: .42em; text-transform: uppercase;
     color: var(--gold); margin-bottom: 10px; }
   #landing h1 { font-size: clamp(34px, 9vw, 52px); line-height: 1.05;
@@ -104,12 +106,18 @@
   #creator-form .row .btn { margin-bottom: 0; padding: 13px; font-size: 14px; }
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
 </head>
 <body>
   <video id="camera-feed" autoplay muted playsinline></video>
   <canvas id="gl"></canvas>
 
   <div id="landing">
+    <model-viewer id="hero-dragon" src="dragon.glb"
+      autoplay auto-rotate rotation-per-second="12deg"
+      camera-controls disable-zoom disable-pan interaction-prompt="none"
+      shadow-intensity="0" exposure="1.1"
+      alt="A dragon guarding the world's second layer"></model-viewer>
     <div class="wordmark">Mirage</div>
     <h1>The world has a <em>second layer</em>.</h1>
     <p>Point your device at the world around you and discover living 3D artifacts anchored to real places.</p>
