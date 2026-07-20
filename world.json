@@ -65,6 +65,16 @@
       "lng": 98.3129,
       "color": "#7f77dd",
       "note": "Light column over Phuket"
+    },
+    {
+      "id": "mohinkhao-dragon",
+      "name": "Guardian of Mo Hin Khao",
+      "type": "model",
+      "url": "dragon.glb",
+      "scale": 2,
+      "lat": 16.063977,
+      "lng": 101.966409,
+      "note": "A dragon guards the ancient stones of Chaiyaphum"
     }
   ]
 }
