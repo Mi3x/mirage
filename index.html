@@ -27,26 +27,28 @@
 
   /* ---- Landing overlay ---- */
   #landing { position: absolute; inset: 0; display: flex; flex-direction: column;
-    justify-content: flex-end; padding: 32px 28px 56px;
+    justify-content: flex-end; padding: 16px 24px 30px;
     background: linear-gradient(180deg, rgba(11,14,26,.2) 0%, rgba(11,14,26,.92) 70%);
     z-index: 10; }
-  #hero-dragon { flex: 1; min-height: 0; width: 100%; margin-bottom: 8px;
+  #hero-dragon { flex: 1; min-height: 0; width: 100%; margin-bottom: 4px;
     --poster-color: transparent; background: transparent; }
-  .wordmark { font-size: 13px; letter-spacing: .42em; text-transform: uppercase;
-    color: var(--gold); margin-bottom: 10px; }
-  #landing h1 { font-size: clamp(34px, 9vw, 52px); line-height: 1.05;
-    font-weight: 650; letter-spacing: -0.01em; margin-bottom: 14px; }
+  .wordmark { font-size: 12px; letter-spacing: .42em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 6px; }
+  #landing h1 { font-size: clamp(26px, 6vw, 38px); line-height: 1.05;
+    font-weight: 650; letter-spacing: -0.01em; margin-bottom: 8px; }
   #landing h1 em { font-style: normal; color: var(--teal); }
-  #landing p { font-size: 15px; line-height: 1.55; color: var(--dim);
-    max-width: 34ch; margin-bottom: 28px; }
-  .btn { display: block; width: 100%; padding: 17px; border: 0; border-radius: 14px;
-    font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 12px;
+  #landing p { font-size: 13px; line-height: 1.45; color: var(--dim);
+    max-width: 46ch; margin-bottom: 16px; }
+  .btn { display: block; width: 100%; padding: 12px; border: 0; border-radius: 12px;
+    font-size: 15px; font-weight: 600; cursor: pointer; margin-bottom: 8px;
     font-family: inherit; }
   .btn-primary { background: var(--gold); color: var(--ink); }
   .btn-ghost { background: transparent; color: var(--mist);
     border: 1px solid rgba(242,239,230,.28); }
   .btn:disabled { opacity: .4; }
-  #xr-note { font-size: 12px; color: var(--dim); text-align: center; }
+  .btn-row { display: flex; gap: 8px; }
+  .btn-row .btn { font-size: 13px; padding: 11px 8px; }
+  #xr-note { font-size: 11px; color: var(--dim); text-align: center; }
 
   /* ---- HUD ---- */
   #hud { position: absolute; inset: 0; z-index: 5; pointer-events: none;
@@ -123,8 +125,10 @@
     <h1>The world has a <em>second layer</em>.</h1>
     <p>Point your device at the world around you and discover living 3D artifacts anchored to real places.</p>
     <button class="btn btn-primary" id="btn-phone">Enter with phone camera</button>
-    <button class="btn btn-ghost" id="btn-xr" disabled>Enter with glasses / headset</button>
-    <button class="btn btn-ghost" id="btn-map">View world map</button>
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="btn-xr" disabled>Glasses / headset</button>
+      <button class="btn btn-ghost" id="btn-map">View world map</button>
+    </div>
     <div id="xr-note">Checking for WebXR device…</div>
   </div>
 
