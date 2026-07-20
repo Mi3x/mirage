@@ -81,6 +81,27 @@
   .leaflet-popup-content { font-family: inherit; }
   .anchor-pop b { display: block; font-size: 14px; }
   .anchor-pop small { color: #666; }
+  .pop-del { margin-top: 6px; background: #c33; color: #fff; border: 0;
+    border-radius: 6px; padding: 4px 10px; font-size: 12px; cursor: pointer; }
+
+  /* ---- Creator panel ---- */
+  #map-actions { display: flex; gap: 8px; padding: 0 14px 12px; }
+  .chip { flex: 1; padding: 11px; border: 1px solid rgba(242,239,230,.25);
+    background: rgba(242,239,230,.06); color: var(--mist); border-radius: 10px;
+    font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
+  .chip.active { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+  #creator-form { display: none; padding: 14px; background: rgba(242,239,230,.05);
+    border-top: 1px solid rgba(242,239,230,.12); }
+  #creator-form label { display: block; font-size: 12px; color: var(--dim); margin: 10px 0 4px; }
+  #creator-form input, #creator-form select { width: 100%; padding: 11px;
+    border-radius: 10px; border: 1px solid rgba(242,239,230,.25);
+    background: var(--ink); color: var(--mist); font-size: 14px; font-family: inherit; }
+  .swatches { display: flex; gap: 10px; margin-top: 4px; }
+  .swatch { width: 34px; height: 34px; border-radius: 50%; border: 2px solid transparent;
+    cursor: pointer; }
+  .swatch.active { border-color: var(--mist); }
+  #creator-form .row { display: flex; gap: 8px; margin-top: 14px; }
+  #creator-form .row .btn { margin-bottom: 0; padding: 13px; font-size: 14px; }
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 </head>
@@ -103,7 +124,38 @@
       <div class="wordmark">Mirage · world map</div>
       <button id="btn-map-close" aria-label="Close map">✕</button>
     </div>
+    <div id="map-actions">
+      <button class="chip" id="btn-add-mode">+ Add anchor</button>
+      <button class="chip" id="btn-copy-json">Copy JSON</button>
+    </div>
     <div id="map"></div>
+    <div id="creator-form">
+      <label for="cf-name">Name</label>
+      <input id="cf-name" placeholder="My school portal" maxlength="40">
+      <label for="cf-type">Type</label>
+      <select id="cf-type">
+        <option value="portal">Portal (glowing ring)</option>
+        <option value="crystal">Crystal (floating gem)</option>
+        <option value="beacon">Beacon (light column)</option>
+        <option value="model">My own 3D model (.glb link)</option>
+      </select>
+      <div id="cf-model-row" style="display:none">
+        <label for="cf-url">Model URL (.glb)</label>
+        <input id="cf-url" placeholder="https://…/mymodel.glb">
+      </div>
+      <label>Color</label>
+      <div class="swatches">
+        <div class="swatch active" data-c="#3ec6a8" style="background:#3ec6a8"></div>
+        <div class="swatch" data-c="#e8b44a" style="background:#e8b44a"></div>
+        <div class="swatch" data-c="#7f77dd" style="background:#7f77dd"></div>
+        <div class="swatch" data-c="#f0997b" style="background:#f0997b"></div>
+        <div class="swatch" data-c="#ed93b1" style="background:#ed93b1"></div>
+      </div>
+      <div class="row">
+        <button class="btn btn-primary" id="cf-save">Save anchor</button>
+        <button class="btn btn-ghost" id="cf-cancel">Cancel</button>
+      </div>
+    </div>
   </div>
 
   <div id="hud">
@@ -127,9 +179,47 @@
   <script type="module" src="main.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script>
-    // ---- World map ----
-    let worldMap = null;
+    // ---- World map + creator mode ----
+    const LKEY = "mirage-local-anchors";
+    const getLocal = () => { try { return JSON.parse(localStorage.getItem(LKEY)) ?? []; } catch { return []; } };
+    const setLocal = (a) => localStorage.setItem(LKEY, JSON.stringify(a));
+
+    let worldMap = null, localLayer = null;
+    let addMode = false, draftLatLng = null, draftMarker = null, pickedColor = "#3ec6a8";
     const overlay = document.getElementById("map-overlay");
+    const form = document.getElementById("creator-form");
+    const toastEl = document.getElementById("toast");
+
+    function mapToast(msg, ms = 3500) {
+      toastEl.textContent = msg;
+      toastEl.style.display = "block";
+      clearTimeout(mapToast._t);
+      mapToast._t = setTimeout(() => (toastEl.style.display = "none"), ms);
+    }
+
+    function popupHtml(a, isLocal) {
+      return `<div class="anchor-pop"><b>${a.name}</b>` +
+        `<small>${a.type}${a.note ? " · " + a.note : ""}</small>` +
+        (isLocal ? `<button class="pop-del" onclick="deleteLocalAnchor('${a.id}')">Delete</button>` : "") +
+        `</div>`;
+    }
+
+    function drawLocalAnchors() {
+      if (localLayer) localLayer.remove();
+      localLayer = L.layerGroup().addTo(worldMap);
+      for (const a of getLocal()) {
+        L.circleMarker([a.lat, a.lng], {
+          radius: 9, color: a.color || "#3ec6a8", weight: 3, dashArray: "4 4",
+          fillColor: a.color || "#3ec6a8", fillOpacity: 0.35,
+        }).addTo(localLayer).bindPopup(popupHtml(a, true));
+      }
+    }
+
+    window.deleteLocalAnchor = (id) => {
+      setLocal(getLocal().filter((a) => a.id !== id));
+      drawLocalAnchors();
+      mapToast("Anchor deleted from this device");
+    };
 
     document.getElementById("btn-map").addEventListener("click", async () => {
       overlay.style.display = "flex";
@@ -148,22 +238,30 @@
           const color = a.color || "#3ec6a8";
           L.circleMarker([a.lat, a.lng], {
             radius: 9, color, weight: 3, fillColor: color, fillOpacity: 0.35,
-          })
-            .addTo(worldMap)
-            .bindPopup(
-              `<div class="anchor-pop"><b>${a.name}</b>` +
-              `<small>${a.type}${a.note ? " · " + a.note : ""}</small></div>`
-            );
+          }).addTo(worldMap).bindPopup(popupHtml(a, false));
           pts.push([a.lat, a.lng]);
         }
         if (pts.length) worldMap.fitBounds(pts, { padding: [40, 40] });
       } catch (e) { console.error(e); }
 
-      // Show the visitor's own position as a white dot, if they allow it
+      drawLocalAnchors();
+
       navigator.geolocation?.getCurrentPosition((pos) => {
         L.circleMarker([pos.coords.latitude, pos.coords.longitude], {
           radius: 7, color: "#f2efe6", weight: 3, fillColor: "#f2efe6", fillOpacity: 0.9,
         }).addTo(worldMap).bindPopup("<b>You are here</b>");
+      });
+
+      worldMap.on("click", (e) => {
+        if (!addMode) return;
+        draftLatLng = e.latlng;
+        if (draftMarker) draftMarker.remove();
+        draftMarker = L.circleMarker(e.latlng, {
+          radius: 11, color: pickedColor, weight: 3, dashArray: "2 4",
+          fillColor: pickedColor, fillOpacity: 0.5,
+        }).addTo(worldMap);
+        form.style.display = "block";
+        document.getElementById("cf-name").focus();
       });
 
       setTimeout(() => worldMap.invalidateSize(), 100);
@@ -171,6 +269,79 @@
 
     document.getElementById("btn-map-close").addEventListener("click", () => {
       overlay.style.display = "none";
+    });
+
+    // Add mode toggle
+    const addBtn = document.getElementById("btn-add-mode");
+    addBtn.addEventListener("click", () => {
+      addMode = !addMode;
+      addBtn.classList.toggle("active", addMode);
+      if (addMode) mapToast("Tap the map where your anchor should live");
+      else { form.style.display = "none"; if (draftMarker) draftMarker.remove(); }
+    });
+
+    // Color swatches
+    document.querySelectorAll(".swatch").forEach((s) => {
+      s.addEventListener("click", () => {
+        document.querySelectorAll(".swatch").forEach((x) => x.classList.remove("active"));
+        s.classList.add("active");
+        pickedColor = s.dataset.c;
+        if (draftMarker) draftMarker.setStyle({ color: pickedColor, fillColor: pickedColor });
+      });
+    });
+
+    // Show model URL field only for type=model
+    document.getElementById("cf-type").addEventListener("change", (e) => {
+      document.getElementById("cf-model-row").style.display =
+        e.target.value === "model" ? "block" : "none";
+    });
+
+    // Save anchor to this device
+    document.getElementById("cf-save").addEventListener("click", () => {
+      if (!draftLatLng) { mapToast("Tap the map first to choose a spot"); return; }
+      const name = document.getElementById("cf-name").value.trim() || "My anchor";
+      const type = document.getElementById("cf-type").value;
+      const anchor = {
+        id: "local-" + Date.now(),
+        name, type,
+        lat: +draftLatLng.lat.toFixed(6),
+        lng: +draftLatLng.lng.toFixed(6),
+        color: pickedColor,
+        note: "Created by me",
+      };
+      if (type === "model") {
+        const url = document.getElementById("cf-url").value.trim();
+        if (!url.endsWith(".glb")) { mapToast("Model needs a link ending in .glb"); return; }
+        anchor.url = url; anchor.scale = 1;
+      }
+      setLocal([...getLocal(), anchor]);
+      drawLocalAnchors();
+      form.style.display = "none";
+      if (draftMarker) draftMarker.remove();
+      draftLatLng = null;
+      addMode = false; addBtn.classList.remove("active");
+      document.getElementById("cf-name").value = "";
+      mapToast("Saved! It now appears in your AR on this device. Tap Copy JSON to publish it for everyone.", 5000);
+    });
+
+    document.getElementById("cf-cancel").addEventListener("click", () => {
+      form.style.display = "none";
+      if (draftMarker) draftMarker.remove();
+      draftLatLng = null;
+    });
+
+    // Copy local anchors as JSON to paste into world.json on GitHub
+    document.getElementById("btn-copy-json").addEventListener("click", async () => {
+      const mine = getLocal();
+      if (!mine.length) { mapToast("No anchors created yet — tap + Add anchor first"); return; }
+      const cleaned = mine.map(({ id, ...rest }, i) => ({ id: "my-anchor-" + (i + 1), ...rest }));
+      const text = JSON.stringify(cleaned, null, 2).replace(/^\[\n|\n\]$/g, "");
+      try {
+        await navigator.clipboard.writeText(text);
+        mapToast("Copied! Paste it into the anchors list in world.json on GitHub (add a comma after the last one).", 6000);
+      } catch {
+        prompt("Copy this and paste into world.json:", text);
+      }
     });
 
     if ("serviceWorker" in navigator) {
