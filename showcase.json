@@ -1,0 +1,47 @@
+{
+  "_readme": "Showcase Mode: open mirage-jet.vercel.app/?world=showcase — the full Mirage experience assembles itself around the visitor wherever they stand. Anchors use rel offsets in meters (north/east, negatives = south/west) instead of fixed coordinates.",
+  "anchors": [
+    {
+      "id": "sc-portal",
+      "name": "The Gateway",
+      "type": "portal",
+      "rel": { "north": 15, "east": 0 },
+      "color": "#3ec6a8",
+      "note": "เดินตรงไปข้างหน้า ผ่านประตูมิติ — Walk forward, through the gate"
+    },
+    {
+      "id": "sc-crystal-east",
+      "name": "Sun Crystal",
+      "type": "crystal",
+      "rel": { "north": 6, "east": 12 },
+      "color": "#e8b44a",
+      "note": "มองทางขวา — Look to your right"
+    },
+    {
+      "id": "sc-crystal-west",
+      "name": "Moon Crystal",
+      "type": "crystal",
+      "rel": { "north": 6, "east": -12 },
+      "color": "#ed93b1",
+      "note": "มองทางซ้าย — Look to your left"
+    },
+    {
+      "id": "sc-beacon",
+      "name": "Home Beacon",
+      "type": "beacon",
+      "rel": { "north": -18, "east": 0 },
+      "color": "#7f77dd",
+      "note": "หันหลังกลับ — Turn around"
+    },
+    {
+      "id": "sc-dragon",
+      "name": "The Guardian",
+      "type": "model",
+      "url": "dragon.glb",
+      "scale": 2,
+      "height": 10,
+      "rel": { "north": 28, "east": 8 },
+      "note": "แหงนมองบนฟ้า — Look up to the sky"
+    }
+  ]
+}

@@ -52,6 +52,16 @@ function showToast(msg, ms = 3500) {
 // ---------- Anchor placement ----------
 function refreshPlacement() {
   if (!here) return;
+
+  // Showcase support: anchors with a `rel` offset (meters from the visitor)
+  // get real coordinates from wherever this visitor is standing.
+  for (const a of anchors) {
+    if (a.rel && a.lat == null) {
+      a.lat = here.lat + (a.rel.north ?? 0) / 111320;
+      a.lng = here.lng + (a.rel.east ?? 0) / (111320 * Math.cos((here.lat * Math.PI) / 180));
+    }
+  }
+
   const near = nearbyAnchors(anchors, here, VISIBLE_RADIUS_M);
 
   // Demo fallback: if nothing is nearby, spawn a portal ~20 m north of you
@@ -79,7 +89,7 @@ function refreshPlacement() {
     // exact, distance is capped) so they remain visible at readable size.
     const d = Math.hypot(east, north);
     const k = d > DRAW_CAP_M ? DRAW_CAP_M / d : 1;
-    obj.position.set(east * k, 0, -north * k);
+    obj.position.set(east * k, a.height ?? 0, -north * k);
     const scale = d > DRAW_CAP_M ? 1 + (d / DRAW_CAP_M) * 0.15 : 1;
     obj.scale.setScalar(scale);
   }

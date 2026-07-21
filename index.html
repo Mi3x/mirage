@@ -250,6 +250,7 @@
         const data = await res.json();
         const pts = [];
         for (const a of data.anchors ?? []) {
+          if (a.lat == null || a.lng == null) continue; // relative/showcase anchors have no fixed spot
           const color = a.color || "#3ec6a8";
           L.circleMarker([a.lat, a.lng], {
             radius: 9, color, weight: 3, fillColor: color, fillOpacity: 0.35,
