@@ -49,6 +49,10 @@
   .btn-row { display: flex; gap: 8px; }
   .btn-row .btn { font-size: 13px; padding: 11px 8px; }
   #xr-note { font-size: 11px; color: var(--dim); text-align: center; }
+  #worlds { display: flex; gap: 26px; margin-left: auto; margin-bottom: 10px; flex-shrink: 0; }
+  .world-item { background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; }
+  .world-item .w-word { font-size: clamp(28px, 4vw, 40px); font-weight: 700; line-height: 1; }
+  .world-item:active { transform: scale(.95); }
 
   /* ---- HUD ---- */
   #hud { position: absolute; inset: 0; z-index: 5; pointer-events: none;
@@ -125,9 +129,18 @@
       camera-orbit="0deg 80deg 55%" min-camera-orbit="auto auto 25%" max-camera-orbit="auto auto 160%"
       shadow-intensity="0" exposure="1.1"
       alt="A dragon guarding the world's second layer"></model-viewer>
-    <div class="wordmark">Mirage</div>
-    <h1>The world has a <em>second layer</em>.</h1>
-    <p>Point your device at the world around you and discover living 3D artifacts anchored to real places.</p>
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:14px;">
+      <div style="max-width:340px;">
+        <div class="wordmark">Mirage</div>
+        <h1>The world has a <em>second layer</em>.</h1>
+        <p>Point your device at the world around you and discover living 3D artifacts anchored to real places.</p>
+      </div>
+      <div id="worlds">
+        <button class="world-item" id="w-we"><span class="w-word" style="color:#e24b4a">We</span></button>
+        <button class="world-item" id="w-me"><span class="w-word" style="color:#e8b44a">Me</span></button>
+        <button class="world-item" id="w-you"><span class="w-word" style="color:#f2efe6">You</span></button>
+      </div>
+    </div>
     <button class="btn btn-primary" id="btn-phone">Enter with phone camera</button>
     <div class="btn-row">
       <button class="btn btn-ghost" id="btn-xr" disabled>Glasses / headset</button>
@@ -366,6 +379,20 @@
       } catch {
         prompt("Copy this and paste into world.json:", text);
       }
+    });
+
+    // ---- We · Me · You world switcher ----
+    // We = shared public world, Me = showcase around you, You = venue worlds
+    const CONTACT_MESSAGE = "You world — built for your venue. Contact the Mirage team"; // change to your email or LINE later
+    document.getElementById("w-we").addEventListener("click", () => {
+      if (location.search) location.href = location.pathname;
+      else mapToast("We world — the world we all share. You are already here");
+    });
+    document.getElementById("w-me").addEventListener("click", () => {
+      location.href = location.pathname + "?world=showcase";
+    });
+    document.getElementById("w-you").addEventListener("click", () => {
+      mapToast(CONTACT_MESSAGE, 5000);
     });
 
     if ("serviceWorker" in navigator) {
