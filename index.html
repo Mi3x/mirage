@@ -279,6 +279,7 @@
           pts.push([a.lat, a.lng]);
         }
         if (pts.length) worldMap.fitBounds(pts, { padding: [40, 40] });
+        else mapToast("Me world travels with you — its magic appears around you, not on the map. Tap We on the home page to see the world map.", 6000);
       } catch (e) { console.error(e); }
 
       drawLocalAnchors();
