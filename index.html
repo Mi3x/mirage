@@ -83,6 +83,10 @@
     cursor: pointer; }
   #map { flex: 1; }
   .leaflet-popup-content { font-family: inherit; }
+  .anchor-label { background: rgba(11,14,26,.85); color: var(--mist); border: 0;
+    border-radius: 6px; padding: 2px 7px; font-size: 11px; font-weight: 600;
+    box-shadow: none; white-space: nowrap; }
+  .leaflet-tooltip-top.anchor-label::before { border-top-color: rgba(11,14,26,.85); }
   .anchor-pop b { display: block; font-size: 14px; }
   .anchor-pop small { color: #666; }
   .pop-del { margin-top: 6px; background: #c33; color: #fff; border: 0;
@@ -222,9 +226,11 @@
       localLayer = L.layerGroup().addTo(worldMap);
       for (const a of getLocal()) {
         L.circleMarker([a.lat, a.lng], {
-          radius: 9, color: a.color || "#3ec6a8", weight: 3, dashArray: "4 4",
-          fillColor: a.color || "#3ec6a8", fillOpacity: 0.35,
-        }).addTo(localLayer).bindPopup(popupHtml(a, true));
+          radius: 10, color: "#ffffff", weight: 2.5, dashArray: "4 4",
+          fillColor: a.color || "#3ec6a8", fillOpacity: 0.95,
+        }).addTo(localLayer)
+          .bindPopup(popupHtml(a, true))
+          .bindTooltip(a.name, { permanent: true, direction: "top", offset: [0, -10], className: "anchor-label" });
       }
     }
 
@@ -253,8 +259,10 @@
           if (a.lat == null || a.lng == null) continue; // relative/showcase anchors have no fixed spot
           const color = a.color || "#3ec6a8";
           L.circleMarker([a.lat, a.lng], {
-            radius: 9, color, weight: 3, fillColor: color, fillOpacity: 0.35,
-          }).addTo(worldMap).bindPopup(popupHtml(a, false));
+            radius: 10, color: "#ffffff", weight: 2.5, fillColor: color, fillOpacity: 0.95,
+          }).addTo(worldMap)
+            .bindPopup(popupHtml(a, false))
+            .bindTooltip(a.name, { permanent: true, direction: "top", offset: [0, -10], className: "anchor-label" });
           pts.push([a.lat, a.lng]);
         }
         if (pts.length) worldMap.fitBounds(pts, { padding: [40, 40] });
