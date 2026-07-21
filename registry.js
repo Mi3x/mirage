@@ -17,9 +17,17 @@ export function saveLocalAnchors(list) {
   localStorage.setItem(LOCAL_KEY, JSON.stringify(list));
 }
 
+// Multi-world support: each venue can have its own world file.
+// mirage-jet.vercel.app                    -> world.json (the public world)
+// mirage-jet.vercel.app/?world=centralworld -> centralworld.json (venue world)
+export function worldFile() {
+  const param = new URLSearchParams(location.search).get("world");
+  return param && /^[a-z0-9-]{1,40}$/.test(param) ? `${param}.json` : "world.json";
+}
+
 export async function loadWorld() {
-  const res = await fetch("world.json", { cache: "no-cache" });
-  if (!res.ok) throw new Error("Could not load world.json");
+  const res = await fetch(worldFile(), { cache: "no-cache" });
+  if (!res.ok) throw new Error(`Could not load ${worldFile()}`);
   const data = await res.json();
   // Published world + this device's own creations, together.
   return [...(data.anchors ?? []), ...loadLocalAnchors()];

@@ -1,0 +1,60 @@
+{
+  "_readme": "Venue demo: CentralWorld Square treasure hunt. Open with mirage-jet.vercel.app/?world=centralworld — collect all 4 crystals around the square, then meet the golden dragon at the center.",
+  "anchors": [
+    {
+      "id": "cw-dragon",
+      "name": "Golden Guardian of centralwOrld",
+      "type": "model",
+      "url": "dragon.glb",
+      "scale": 2,
+      "lat": 13.746421,
+      "lng": 100.540131,
+      "note": "The dragon awaits at the heart of the square"
+    },
+    {
+      "id": "cw-crystal-1",
+      "name": "Crystal 1 of 4 — North Gate",
+      "type": "crystal",
+      "lat": 13.746700,
+      "lng": 100.540000,
+      "color": "#3ec6a8",
+      "note": "เก็บคริสตัลให้ครบ 4 เม็ด รับรางวัลที่มังกร"
+    },
+    {
+      "id": "cw-crystal-2",
+      "name": "Crystal 2 of 4 — Ratchadamri Side",
+      "type": "crystal",
+      "lat": 13.746300,
+      "lng": 100.540600,
+      "color": "#e8b44a",
+      "note": "เก็บคริสตัลให้ครบ 4 เม็ด รับรางวัลที่มังกร"
+    },
+    {
+      "id": "cw-crystal-3",
+      "name": "Crystal 3 of 4 — Mall Entrance",
+      "type": "crystal",
+      "lat": 13.746500,
+      "lng": 100.539600,
+      "color": "#7f77dd",
+      "note": "เก็บคริสตัลให้ครบ 4 เม็ด รับรางวัลที่มังกร"
+    },
+    {
+      "id": "cw-crystal-4",
+      "name": "Crystal 4 of 4 — South Plaza",
+      "type": "crystal",
+      "lat": 13.746150,
+      "lng": 100.540300,
+      "color": "#ed93b1",
+      "note": "เก็บคริสตัลให้ครบ 4 เม็ด รับรางวัลที่มังกร"
+    },
+    {
+      "id": "cw-beacon",
+      "name": "Event Beacon",
+      "type": "beacon",
+      "lat": 13.746550,
+      "lng": 100.540350,
+      "color": "#e8b44a",
+      "note": "ลำแสงบอกจุดเริ่มเกม — Start here!"
+    }
+  ]
+}

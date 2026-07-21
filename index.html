@@ -244,7 +244,9 @@
       }).addTo(worldMap);
 
       try {
-        const res = await fetch("world.json", { cache: "no-cache" });
+        const wparam = new URLSearchParams(location.search).get("world");
+        const wfile = wparam && /^[a-z0-9-]{1,40}$/.test(wparam) ? `${wparam}.json` : "world.json";
+        const res = await fetch(wfile, { cache: "no-cache" });
         const data = await res.json();
         const pts = [];
         for (const a of data.anchors ?? []) {
