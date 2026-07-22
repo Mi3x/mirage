@@ -392,15 +392,15 @@
     if (CUR_WORLD === "showcase") document.getElementById("btn-map").textContent = "Back to World";
     document.getElementById("w-we").addEventListener("click", () => {
       if (location.search) {
-        mapToast("World — the shared world we all explore. Returning…");
-        setTimeout(() => (location.href = location.pathname), 1600);
+        mapToast("World — the shared world we all explore. Returning…", 3500);
+        setTimeout(() => (location.href = location.pathname), 3200);
       } else {
-        mapToast("World — the shared world we all explore. You are already here");
+        mapToast("World — the shared world we all explore. You are already here", 6000);
       }
     });
     document.getElementById("w-me").addEventListener("click", () => {
-      mapToast("Me world — magic born around you, anywhere on Earth. Entering…");
-      setTimeout(() => (location.href = location.pathname + "?world=showcase"), 1600);
+      mapToast("Me world — magic born around you, anywhere on Earth. Entering…", 3500);
+      setTimeout(() => (location.href = location.pathname + "?world=showcase"), 3200);
     });
     const CONTACT_EMAIL = "mirage.wmy@gmail.com";
     document.getElementById("w-you").addEventListener("click", async () => {
