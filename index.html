@@ -32,10 +32,10 @@
     z-index: 10; }
   #hero-dragon { flex: 1; min-height: 0; width: 100%; margin-bottom: 4px;
     --poster-color: transparent; background: transparent; }
-  .wordmark { font-size: 12px; letter-spacing: .42em; text-transform: uppercase;
+  .wordmark { font-family: 'Marcellus', serif; font-size: 12px; letter-spacing: .42em; text-transform: uppercase;
     color: var(--gold); margin-bottom: 6px; }
-  #landing h1 { font-size: clamp(26px, 6vw, 38px); line-height: 1.05;
-    font-weight: 650; letter-spacing: -0.01em; margin-bottom: 8px; }
+  #landing h1 { font-family: 'Marcellus', serif; font-size: clamp(27px, 6vw, 40px); line-height: 1.12;
+    font-weight: 400; letter-spacing: 0; margin-bottom: 8px; }
   #landing h1 em { font-style: normal; color: var(--teal); }
   #landing p { font-size: 13px; line-height: 1.45; color: var(--dim);
     max-width: 46ch; margin-bottom: 16px; }
@@ -51,7 +51,7 @@
   #xr-note { font-size: 11px; color: var(--dim); text-align: center; }
   #worlds { display: flex; gap: 26px; margin-left: auto; margin-bottom: 10px; flex-shrink: 0; }
   .world-item { background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; }
-  .world-item .w-word { font-size: clamp(28px, 4vw, 40px); font-weight: 700; line-height: 1; }
+  .world-item .w-word { font-family: 'Marcellus', serif; font-size: clamp(28px, 4vw, 42px); font-weight: 400; line-height: 1; }
   .world-item:active { transform: scale(.95); }
 
   /* ---- HUD ---- */
@@ -115,6 +115,9 @@
   #creator-form .row { display: flex; gap: 8px; margin-top: 14px; }
   #creator-form .row .btn { margin-bottom: 0; padding: 13px; font-size: 14px; }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
 </head>
