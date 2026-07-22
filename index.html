@@ -390,7 +390,6 @@
     // World = shared public world, Me = showcase around you, You = venue worlds
     const CUR_WORLD = new URLSearchParams(location.search).get("world");
     if (CUR_WORLD === "showcase") document.getElementById("btn-map").textContent = "Back to World";
-    const CONTACT_MESSAGE = "You world — built for your venue. Contact the Mirage team"; // change to your email or LINE later
     document.getElementById("w-we").addEventListener("click", () => {
       if (location.search) {
         mapToast("World — the shared world we all explore. Returning…");
@@ -403,8 +402,14 @@
       mapToast("Me world — magic born around you, anywhere on Earth. Entering…");
       setTimeout(() => (location.href = location.pathname + "?world=showcase"), 1600);
     });
-    document.getElementById("w-you").addEventListener("click", () => {
-      mapToast(CONTACT_MESSAGE, 5000);
+    const CONTACT_EMAIL = "mirage.wmy@gmail.com";
+    document.getElementById("w-you").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(CONTACT_EMAIL);
+        mapToast(`You world — built for your venue. Contact the Mirage team: ${CONTACT_EMAIL} (copied!)`, 6000);
+      } catch {
+        mapToast(`You world — built for your venue. Contact the Mirage team: ${CONTACT_EMAIL}`, 6000);
+      }
     });
 
     if ("serviceWorker" in navigator) {
