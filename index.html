@@ -392,11 +392,16 @@
     if (CUR_WORLD === "showcase") document.getElementById("btn-map").textContent = "Back to World";
     const CONTACT_MESSAGE = "You world — built for your venue. Contact the Mirage team"; // change to your email or LINE later
     document.getElementById("w-we").addEventListener("click", () => {
-      if (location.search) location.href = location.pathname;
-      else mapToast("World — the shared world. You are already here");
+      if (location.search) {
+        mapToast("World — the shared world we all explore. Returning…");
+        setTimeout(() => (location.href = location.pathname), 1600);
+      } else {
+        mapToast("World — the shared world we all explore. You are already here");
+      }
     });
     document.getElementById("w-me").addEventListener("click", () => {
-      location.href = location.pathname + "?world=showcase";
+      mapToast("Me world — magic born around you, anywhere on Earth. Entering…");
+      setTimeout(() => (location.href = location.pathname + "?world=showcase"), 1600);
     });
     document.getElementById("w-you").addEventListener("click", () => {
       mapToast(CONTACT_MESSAGE, 5000);
